@@ -50,7 +50,7 @@ app.publish(data => app.channel('everybody'));
 app
   .listen(config.KepSock13318Port)
   .on('listening', () =>
-    console.log(`KepSock11318 server listening on ${config.KepSock13318Port}`),
+    console.log(`KepSock13318 server listening on ${config.KepSock13318Port}`),
   );
 
 // For good measure let's create a message
@@ -64,16 +64,16 @@ let mqttClient = mqtt.connect(config.MQTT);
 mqttClient.on('connect', function() {
   mqttClient.subscribe('Kep13318', function(err) {
     if (!err) {
-      console.log('KepSock11318 subscribed to: Kep13318');
+      console.log('KepSock13318 subscribed to: Kep13318');
     }
   });
 });
 // message is a buffer
 mqttClient.on('message', function(topic, message) {
   const p = JSON.parse(message.toString()); // payload is a buffer
-  //let msg = `${p.TransDate},${p.Part_No},${p.Serial_No},${p.Server},${p.Cycle_Counter_Shift_SL},${p.Quantity},${p.Container_Status}`;
-  console.log(p);
-  // app.service('messages').create({
-  //   text: msg,
-  // });
+  let msg = `${p.TransDate}, Work Center: ${p.WorkCenter},${p.NodeId},${p.Cycle_Counter_Shift_SL}`;
+  console.log(msg);
+  app.service('messages').create({
+    text: msg,
+  });
 });
